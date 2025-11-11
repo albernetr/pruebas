@@ -352,3 +352,5 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
 if __name__ == "__main__":
     args = parse_args()
     run(args.root, args.out, args.json)
+
+#python excel_schema_profiler.py --root "RUTA/BASE" --out "reporte.csv" --json "reporte.json"
