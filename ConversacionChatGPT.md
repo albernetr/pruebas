@@ -249,6 +249,9 @@ df.to_csv('contratos_distribucion_2025.csv', index=False)
 print(df[['Inicio Contrato', 'Valor_Mes_Contrato_COP', 'Meses_Ajustados_2025', 'Total_Anual_2025'] + meses_cols])
 ```
 
+
+
+
 ```
 
 ```
