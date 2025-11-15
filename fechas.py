@@ -64,4 +64,80 @@ if __name__ == "__main__":
 
     for ini, fin in ejemplos:
         m, d = meses_y_dias_en_2025(ini, fin)
-        print(f"{ini} – {fin} => {m} meses y {d} días de 2025")
+        print(f"{ini} – {fin} => {m} meses y {d} días de 2025")0
+
+from datetime import datetime
+import pandas as pd
+
+def normalizar_fechas(data, sep_in='/', formato_in='m-d-a', sep_out='/', formato_out='m-d-a'):
+    """
+    Normaliza fechas en una lista de listas (varias columnas).
+    Convierte día y mes a dos dígitos y año a 4 dígitos.
+    
+    Parámetros:
+    - data: lista de listas con las fechas (ej. [[col1, col2], [col1, col2], ...])
+    - sep_in: separador de entrada (por defecto '/')
+    - formato_in: formato de entrada (por defecto 'm-d-a')
+    - sep_out: separador de salida (por defecto '/')
+    - formato_out: formato de salida (por defecto 'm-d-a')
+    
+    Retorna:
+    - Lista de listas con las fechas normalizadas.
+    """
+    formato_map = {'d': '%d', 'm': '%m', 'a': '%Y'}
+    formato_map_in = {'d': '%d', 'm': '%m', 'a': '%Y'}
+
+    # Construir formato de entrada y salida
+    fmt_in = sep_in.join([formato_map_in[x] for x in formato_in.split('-')])
+    fmt_out = sep_out.join([formato_map[x] for x in formato_out.split('-')])
+
+    resultado = []
+    for fila in data:
+        nueva_fila = []
+        for fecha in fila:
+            try:
+                # Intentar parsear con año largo
+                dt = datetime.strptime(fecha, fmt_in)
+            except ValueError:
+                # Intentar con año corto
+                fmt_in_short = fmt_in.replace('%Y', '%y')
+                try:
+                    dt = datetime.strptime(fecha, fmt_in_short)
+                except ValueError:
+                    nueva_fila.append(fecha)
+                    continue
+            nueva_fila.append(dt.strftime(fmt_out))
+        resultado.append(nueva_fila)
+    return resultado
+
+# Ejemplo de uso
+entrada = [
+    ["02/10/2025", "11/06/2025"],
+    ["3/28/25", "11/06/2025"],
+    ["9/24/25", "10/07/2025"],
+    ["03/04/2025", "05/09/2025"],
+    ["03/04/2025", "05/09/2025"],
+    ["03/04/2025", "03/12/2025"],
+    ["3/24/25", "4/18/25"],
+    ["4/18/25", "4/24/25"],
+    ["03/10/2025", "9/30/25"],
+    ["03/10/2025", "11/12/2025"]
+]
+
+entrada2 = [
+    ["02-10-2025", "11-06-2025"],
+    ["23-8-25", "11-06-2025"],
+    ["24-11-25", "24-04-25"],
+    ["03-10-2025", "9-03-25"],
+    ["03-10-2025", "11-12-2025"]
+]
+
+# Normalización
+salida1 = normalizar_fechas(entrada, sep_in='/', formato_in='m-d-a', sep_out='/', formato_out='m-d-a')
+salida2 = normalizar_fechas(entrada2, sep_in='-', formato_in='d-m-a', sep_out='-', formato_out='d-m-a')
+
+# Mostrar resultados
+print("Ejemplo 1:")
+print(pd.DataFrame(salida1, columns=['InicioReal', 'FinReal']))
+print("\nEjemplo 2:")
+print(pd.DataFrame(salida2, columns=['InicioReal', 'FinReal']))
