@@ -50,7 +50,7 @@ max(), min() → máximo y mínimo
 agg() → aplicar múltiples funciones
 
 
-´´´import pandas as pd
+``` import pandas as pd
 
 df = pd.DataFrame({
     'uid': ['uid1', 'uid2', 'uid1', 'uid3'],
@@ -60,7 +60,7 @@ df = pd.DataFrame({
 df.groupby('uid')['cost'].sum()
 df.groupby('uid')['cost'].agg(['sum', 'mean', 'count'])
 
-´´´
+```
 
 
 
