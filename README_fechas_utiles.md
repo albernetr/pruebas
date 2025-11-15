@@ -24,7 +24,23 @@ Ejecuta:
 ```bash
 python -m unittest test_fechas_utiles.py -v
 ```
+Las pruebas validan:
 
+- Año completo 2025 → (12, 0)
+- Intervalo con solo días → (0, 27)
+- Fin exclusivo → (1, 1)
+- Ajustes de fin de mes en bisiesto (2024)
+- Traslape dentro de 2025
+- Wrappers con cadenas
+  
 ## Notas
 - `fin_inclusivo=True` considera el final incluido. Para exclusivo, usa `fin_inclusivo=False`.
 - El cómputo de meses completos es O(1) y maneja ajustes de fin de mes.
+
+Inclusividad del fin:
+- fin_inclusivo=True → tratamos el intervalo como [inicio, fin] (sumamos 1 día internamente).
+- fin_inclusivo=False → se interpreta como [inicio, fin).
+Meses completos: cálculo O(1) con ajuste por día (fin_excl.day < inicio.day), y los días restantes se miden desde el final de esos meses hasta el fin efectivo.
+Casos borde bien manejados: 31 de mes, febrero bisiesto, intervalos cortos, e intervalos sin meses completos.
+
+
