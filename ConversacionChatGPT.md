@@ -60,6 +60,42 @@ df = pd.DataFrame({
 df.groupby('uid')['cost'].sum()
 df.groupby('uid')['cost'].agg(['sum', 'mean', 'count'])
 
+# Agrupacion multiples columnas
+
+df.groupby(['uid', 'otra_columna']).sum()
+```
+
+# función reutilizable que puedes incluir en tu script de utilidades para realizar agrupaciones con groupby y aplicar funciones agregadas como suma, promedio y conteo
+```
+def agrupar_y_agregar(df, columnas_agrupacion, columna_valor, funciones=['sum']):
+    """
+    Agrupa un DataFrame por una o más columnas y aplica funciones agregadas sobre otra columna.
+
+    Parámetros:
+    - df: DataFrame de entrada
+    - columnas_agrupacion: lista de columnas por las que se agrupará
+    - columna_valor: columna sobre la que se aplicarán las funciones
+    - funciones: lista de funciones agregadas (por defecto ['sum'])
+
+    Retorna:
+    - DataFrame con resultados agregados
+    """
+    resultado = df.groupby(columnas_agrupacion)[columna_valor].agg(funciones).reset_index()
+    return resultado
+```
+
+Invocación
+
+```
+from utilidades_datos import agrupar_y_agregar
+
+resultado = agrupar_y_agregar(
+    df,
+    columnas_agrupacion=['troux_uid'],
+    columna_valor='unblended_cost',
+    funciones=['sum', 'mean', 'count']
+)
+print(resultado)
 ```
 
 
