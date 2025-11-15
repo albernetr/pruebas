@@ -1,0 +1,158 @@
+Esto te devolverá un DataFrame con esas tres columnas, sin duplicados.
+
+```
+columnas_deseadas = ['CEDULA', 'EMAIL', 'Nombres']
+resultado = extraer_columnas(df, columnas_deseadas, incluir_duplicados=False)
+```
+Función que maneja correctamente la extracción de Apellido1, Apellido2, Nombre1 y Nombre2, incluso cuando no todos los registros tienen dos nombres o dos apellidos
+```
+df = separar_nombres_apellidos(df)
+```
+crear la columna NombreUsuarioMail que contenga el primer nombre y el primer apellido separados por un espacio, puedes usar el siguiente código:
+```
+df = crear_nombre_usuario_mail(df)
+```
+Función en Python que recibe el archivo Excel y una lista de nombres de hojas, y retorna un diccionario de DataFrames, donde cada clave es el nombre de la hoja.
+Ejemplo de uso:
+
+```
+ruta = "Listados.xlsx"
+hojas = ["Lista1", "Lista2"]
+
+dfs = cargar_hojas_excel(ruta, hojas)
+
+print(dfs.keys())  # Debería mostrar los nombres de las hojas
+
+# Acceder a cada DataFrame:
+df_Lista1= dfs["Lista1"]
+df_Lista2 = dfs["Lista2"]
+```
+
+# Nuevo Dataframe a partir de uno existente
+
+```
+# Suponiendo que ya tienes el diccionario dfs cargado
+df_original = dfs["datos"]
+
+# Seleccionar las columnas requeridas
+columnas_requeridas = ['Codigo', 'Grupo',  'Inicio', 'Fin']
+
+# Crear el nuevo DataFrame
+df_destino= df_original[columnas_requeridas].copy()
+
+```
+✅ Función para extraer columnas y guardar en CSV
+```
+df= extraer_y_guardar(df, ['Codigo', 'Grupo'], 'Grupos.csv', incluir_duplicados=False)
+```
+
+
+# Filtrar por una columna
+resultado = filtrar_dataframe(df, {'Tipo': 'Proyecto'})
+print(resultado)
+
+# Filtrar por varias columnas
+resultado_multi = filtrar_dataframe(df, {
+    'Tipo': 'Proyecto',
+    'EstadoProyecto': 'Activo'
+})
+print(resultado_multi)
+
+# función que hace exactamente lo que necesitas: divide los valores separados por coma en una columna y genera un nuevo registro por cada valor, manteniendo las demás columnas iguales. Además, la hacemos flexible para múltiples columnas si lo deseas.
+
+```
+# Supongamos que tu DataFrame se llama df_portafolio
+df_expandido = dividir_registros(df, ['valores'])
+print(df_expandido)
+
+
+columnas_config = {
+    'Col1': 'Codigo',
+    'OtraColumna': 'DetalleExtra'  # Si tienes más columnas para dividir
+}
+
+df_expandido = dividir_registros_multiple(df_portafolio, columnas_config, separador=',')
+print(df_expandido)
+
+```
+
+# función que cumple con lo que necesitas: contar cuántos elementos separados por un delimitador hay en una columna (o varias) y agregar una nueva columna con ese conteo.
+
+```
+columnas_config = {'Col1': 'Col2'}
+df_conteo = contar_elementos(df, columnas_config)
+print(df_conteo)
+
+columnas_config = {
+    'Col1': 'numCol1',
+    'OtraColumna': 'numOtros'
+}
+
+df_conteo = contar_elementos(df_portafolio, columnas_config, separador=',')
+
+```
+## Normaliza los nombres antes de usar la función:
+
+```
+df_expandido.columns = df_expandido.columns.str.strip()
+```
+# Función para guardar columnas específicas en CSV
+
+```
+ruta_guardada = guardar_columnas_csv(
+    df,
+    columnas=['Codigo', 'Grupo'],
+    nombre_archivo='Listado_Grupos.csv'
+)
+
+print(f"✅ Archivo guardado en: {ruta_guardada}")
+```
+
+#Función para limpiar valores en columnas
+
+```
+reglas = [
+    {'columna': 'Periodo', 'tipo': 'replace', 'patron': ' days'},  # Quitar ' days'
+    {'columna': 'Inicio', 'tipo': 'regex', 'patron': r'[A-Za-z\s]'},  # Quitar letras y espacios
+    {'columna': 'Fin', 'tipo': 'regex', 'patron': r'[A-Za-z\s]'},     # Quitar letras y espacios
+    {'columna': 'Tipo', 'tipo': 'regex', 'patron': r'[A-Za-z]$'}  # Quitar última letra si es letra
+]
+
+df_limpio = limpiar_columnas(df, reglas)
+print(df_limpio)
+```
+
+# Función para formatear fechas
+
+```
+# Caso 1: Entrada m-d-a con / → salida normalizada
+df_limpio = formatear_fechas(df, ['Inicio', 'Fin'], formato='m-d-a', separador='/')
+print(df_limpio)
+
+Caso 2: Entrada d-m-a con - → salida normalizada
+df_limpio = formatear_fechas(df, ['Inicio', 'Fin'], formato='d-m-a', separador='-')
+print(df_limpio)
+
+```
+#función completa que hace:
+✅ Recibe un DataFrame, las dos columnas de fechas, el formato (d-m-a o m-d-a), y opcionalmente una lista de feriados.
+✅ Genera:
+
+Columnas con día, mes y año para cada fecha.
+Columnas con diferencia total en días, meses y años.
+Columna con días laborables (excluyendo fines de semana y feriados).
+Columna con detalle de días y meses laborables por año.
+✅ Valida que la fecha inicial sea menor o igual a la final.
+
+```
+feriados = [datetime(2025, 12, 25), datetime(2025, 1, 1)]  # Ejemplo
+df_resultado = calcular_rangos_fechas(df, 'Inicio', 'Fin', formato='d-m-a', feriados=feriados)
+print(df_resultado)
+```
+``````
+``````
+``````
+``````
+``````
+
+
